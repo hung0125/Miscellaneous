@@ -179,20 +179,14 @@ public class Fire
             byte[] content = FileUtils.readFileToByteArray(f);
             int[] modByte = new int[content.length];
 
-            //backup files
-			String source = "'" + f.getPath().replaceAll("'", "\\\\'") + "'";
-			String destName = "'" + f.getName().replaceAll("'", "\\\\'") + "'";
-            String[] mvCmd = {"sh", "-c", String.format("mkdir /sdcard/fileGuard & mv -f %s /sdcard/fileGuard/%s", source, destName)};
-            Runtime.getRuntime().exec(mvCmd).waitFor();
-			
-            //modify
+            //modify in memory
             int cumulatePt = (int)Math.floor(content.length * 0.1);
             int startPt = 0;
             for (int i = 0; i < 10; i++)
             {
                 try
 				{
-                    for (int j = startPt; j < startPt + 100000; j++)
+                    for (int j = startPt; j < startPt + 1000000; j++)
                     {
                         modByte[j] = content[j] & 0xff;
                         modByte[j] = intKeyStr[modByte[j]];//original bytes -> modded bytes
@@ -204,6 +198,15 @@ public class Fire
 				{}
 
             }
+            
+            //backup original file
+			String source = "'" + f.getPath().replaceAll("'", "\\\\'") + "'";
+			String destName = "'" + f.getName().replaceAll("'", "\\\\'") + "'";
+            String[] mvCmd = {"sh", "-c", String.format("mkdir /sdcard/fileGuard & mv -f %s /sdcard/fileGuard/%s", source, destName)};
+            Runtime.getRuntime().exec(mvCmd).waitFor();
+			FileWriter origCPRef = new FileWriter(new File("/sdcard/fileGuard/path_of_" + f.getName() + ".txt"));
+            origCPRef.write(f.getParent());
+            origCPRef.close();
 
             //output bytes to file
             FileOutputStream fos; 
@@ -227,10 +230,11 @@ public class Fire
 
             //erase backup
             File backupCP = new File("/sdcard/fileGuard/" + f.getName());
-			File backupDel = new File("/sdcard/fileGuard/" + f.getName() + ".deletable");
-			
+            File backupDel = new File(backupCP.getPath() + ".deletable");
 			backupCP.renameTo(backupDel);
 			backupDel.delete();
+            new File("/sdcard/fileGuard/path_of_" + f.getName() + ".txt").delete();
+            
         }
 		catch (Exception e)
 		{System.out.println(e.toString());}
