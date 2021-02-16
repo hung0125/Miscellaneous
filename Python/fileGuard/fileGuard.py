@@ -4,6 +4,9 @@ from shutil import move
 from sys import exit, argv
 from math import floor
 from os.path import basename, join
+from time import time
+
+timeStart = 0
 
 def genKey():
     keyVals = []
@@ -68,6 +71,7 @@ def gatherFile(instructionType, directCMD_PATH, directCMD_CMD):
         print("\nUnknown input...\n")
         exit()
     
+
     #search files
     fl = []
     if instructionType == "Encrypt":
@@ -200,6 +204,13 @@ def encrypt(directCMD_PATH, directCMD_CMD):
         except:
             print(f"[{i+1}/{len(fl)}] Failed protecting: " + fl[i] + "\n")
             #clean garbage
+            try:
+                #clean backup
+                os.rename("Backup_" + basename(fl[i]), "DeleteMe_" + basename(fl[i]))
+                os.remove( "DeleteMe_" + basename(fl[i]))
+                os.remove(f"origpath_{basename(fl[i])}.txt")
+            except:
+                print(f"Failed to clean backup: {fl[i]}")
             
 def decrypt(directCMD_PATH, directCMD_CMD):
     fl = []
@@ -244,27 +255,37 @@ def decrypt(directCMD_PATH, directCMD_CMD):
         except Exception as e:
             print(f"[{i+1}/{len(fl)}] {e}")
             #clean garbage
+            try:
+                os.rename("Backup_" + basename(fl[i]), "DeleteMe_" + basename(fl[i]))
+                os.remove("DeleteMe_" + basename(fl[i]))
+                os.remove(f"origpath_{basename(fl[i])}.txt")
+            except:
+                print(f"Failed to clean backup: {fl[i]}")
 
 
 def ask():
+        global timeStart
         print("----fileGuard V. 000----")
         print("If you would like to change a new encryption key, simply remove the 'key.txt' under the directory contains this program.")
         print('Execute from CMD: fileGuard.exe Encrypt "C:\Windows\System32" "e+:jpg/pdf/exe"')
         print("\n\n\nChoices:\n(1) Encrypt\n(2) Decrypt")
         action = input('Your choice (input number): ')
+        timeStart = int(time())
         if action == "1":
             print("Encrypting...\n")
             encrypt("", "")
-            
+            #record starting ts
         elif action == "2":
             print("Decrypting...\n")
             decrypt("", "")
+            
         else:
             print("Unknown choice")
             ask()
             
 #command example:python fileGuard.py Encrypt "C:\Windows\System32" "e+:jpg/pdf/exe"
 if len(argv) == 4:
+    timeStart = int(time())
     if argv[1] == "Encrypt":
         encrypt(argv[2], argv[3])
     elif argv[1] == "Decrypt":
@@ -275,4 +296,5 @@ if len(argv) == 4:
 else:
     ask()
 
-ended = input("Finished. Press enter to exit...")
+timeUsed = int(time()) - timeStart
+ended = input(f"Finished. Used {timeUsed} seconds. \nPress enter to exit...")
