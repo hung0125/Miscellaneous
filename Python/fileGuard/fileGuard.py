@@ -1,10 +1,9 @@
 import os
 from random import shuffle
 from shutil import move
-import shutil
 from sys import exit, argv
 from math import floor
-from os.path import basename, join, exists
+from os.path import basename, join
 
 def genKey():
     keyVals = []
@@ -168,26 +167,25 @@ def encrypt(directCMD_PATH, directCMD_CMD):
     for i in range(len(fl)):
         try:
             
-            readb = open(fl[i], "rb").read()
+            readb = list(open(fl[i], "rb").read())
             print(f"[{i+1}/{len(fl)}] Protecting: {fl[i]}\n")
             
             startpt = 0
-            for j in range(10):
-                cont = list(readb[startpt:10000])#to byte array
-                startpt += floor(len(readb) * 0.1)
-                contCopy = bytes(cont)
-                
-                for k in range(len(cont)):
-                    cont[k] = key[cont[k]]
-                        
-                res = bytes(cont)
-                readb = readb.replace(contCopy, res, 1)
             
+            for j in range(10):
+                try:
+                    for k in range(startpt, startpt + 20000):
+                        readb[k] = key[readb[k]]
+                except:
+                    pass
+                startpt += floor(len(readb) / 10)
+            readb = bytes(readb)
+
             try:
                 move(fl[i], "Backup_" + basename(fl[i]))
                 open(f"origpath_{basename(fl[i])}.txt", "w").write(fl[i])
             except:
-                print(f"Failed to make backup: {fl[i]}")
+                print(f"Failed to make backup (probably encoding error): {fl[i]}")
             #write bytes to file
             open(fl[i], "wb").write(readb)
             os.rename(fl[i], fl[i] + ".+enc")
@@ -213,28 +211,26 @@ def decrypt(directCMD_PATH, directCMD_CMD):
     #decryption
     for i in range(len(fl)):
         try:
-            readb = open(fl[i], "rb").read()
+            readb = list(open(fl[i], "rb").read())
             
             print(f"[{i+1}/{len(fl)}] Unprotecting: " + fl[i] + "\n")
             
             startpt = 0
+
             for j in range(10):
-                cont = list(readb[startpt:10000])#to byte array
-                startpt += floor(len(readb) * 0.1)
-                contCopy = bytes(cont)
-                
-                for k in range(len(cont)):
-                    cont[k] = revKey[cont[k]]
-                        
-                res = bytes(cont)
-                
-                readb = readb.replace(contCopy, res, 1)
+                try:
+                    for k in range(startpt, startpt + 20000):
+                        readb[k] = revKey[readb[k]]
+                except:
+                    pass
+                startpt += floor(len(readb) / 10)
+            readb = bytes(readb)
             
             try:
                 move(fl[i], "Backup_" + basename(fl[i]))
                 open(f"origpath_{basename(fl[i])}.txt", "w").write(fl[i])
             except:
-                print(f"Failed to make backup: {fl[i]}")
+                print(f"Failed to make backup (probably encoding error): {fl[i]}")
             
             open(fl[i], "wb").write(readb)
             os.rename(fl[i],fl[i][0:len(fl[i])-5])
@@ -254,7 +250,7 @@ def ask():
         print("----fileGuard V. 000----")
         print("If you would like to change a new encryption key, simply remove the 'key.txt' under the directory contains this program.")
         print('Execute from CMD: fileGuard.exe Encrypt "C:\Windows\System32" "e+:jpg/pdf/exe"')
-        print("Choices:\n(1) Encrypt\n(2) Decrypt")
+        print("\n\n\nChoices:\n(1) Encrypt\n(2) Decrypt")
         action = input('Your choice (input number): ')
         if action == "1":
             print("Encrypting...\n")
