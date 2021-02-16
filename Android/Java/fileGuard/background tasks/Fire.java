@@ -136,6 +136,9 @@ public class Fire
             }
 
             sc = new Scanner(f);
+            //clear file list txt
+			f.delete();
+
 			if (isEncrypt)
 			{
 				while (sc.hasNextLine())
@@ -155,10 +158,7 @@ public class Fire
                     fileCount++;
 				}
 			}
-
-			//clear
-			f.delete();
-
+            
 		}
 		catch (Exception e)
 		{
@@ -201,8 +201,8 @@ public class Fire
             
             //backup original file
 			String source = "'" + f.getPath().replaceAll("'", "\\\\'") + "'";
-			String destName = "'" + f.getName().replaceAll("'", "\\\\'") + "'";
-            String[] mvCmd = {"sh", "-c", String.format("mkdir /sdcard/fileGuard & mv -f %s /sdcard/fileGuard/%s", source, destName)};
+			String destName = f.getName().replaceAll("'", "\\\\'");
+            String[] mvCmd = {"sh", "-c", String.format("mkdir /sdcard/fileGuard & mv -f %s '/sdcard/fileGuard/%s'", source, destName)};
             Runtime.getRuntime().exec(mvCmd).waitFor();
 			FileWriter origCPRef = new FileWriter(new File("/sdcard/fileGuard/path_of_" + f.getName() + ".txt"));
             origCPRef.write(f.getParent());
