@@ -9,27 +9,27 @@ public class Fire
 	public static void main(String[] argv)
 	{
 		//beware command escape symbols! replaceAll("'", "\\\\'") then surround variables with ''
-		
+
 		Boolean isEncrypt = Boolean.parseBoolean(argv[0]);
 		String path = "'" + argv[1].replaceAll("'", "\\\\'") + "'";//target path
 		int option = Integer.parseInt(argv[2]);
 		String command = argv[3];
 		String key = argv[4];
-		
+
 		/*Boolean isEncrypt = false;
-		String path = "'" + "/sdcard/FLM User Files/My Songs/".replaceAll("'", "\\\\'") + "'"; //target path
-		int option = 0;
-		String command = "";
-		String key = "241,206,74,165,213,242,105,31,88,235,123,117,226,36,209,39,201,254,131,103,50,133,224,95,83,59,146,17,49,184,135,208,144,28,239,212,60,140,32,54,215,94,166,65,173,178,247,107,20,102,7,76,108,124,246,202,238,248,97,136,193,12,161,27,91,120,217,89,10,111,100,8,46,142,237,194,30,177,159,180,231,52,26,98,211,220,169,34,116,1,141,23,112,170,5,93,251,236,197,75,15,73,80,232,143,234,57,6,229,99,41,58,154,181,55,163,79,147,243,148,191,38,150,137,44,82,216,85,188,33,19,92,128,47,158,227,167,81,138,21,132,183,204,122,125,113,134,198,130,118,156,214,104,25,11,63,245,205,77,115,18,225,66,101,189,195,68,176,210,48,228,253,71,96,172,240,168,151,69,219,90,64,2,61,84,45,56,78,4,230,233,162,24,255,62,70,196,139,244,207,67,192,106,186,203,22,199,175,249,9,252,3,53,109,187,157,126,149,182,174,29,190,40,121,145,13,35,114,160,185,152,51,87,43,218,164,86,129,16,221,119,37,0,153,155,110,72,179,171,127,250,222,200,14,42,223";
-		*/
-		
-		
+		 String path = "'" + "/sdcard/FLM User Files/My Songs/".replaceAll("'", "\\\\'") + "'"; //target path
+		 int option = 0;
+		 String command = "";
+		 String key = "241,206,74,165,213,242,105,31,88,235,123,117,226,36,209,39,201,254,131,103,50,133,224,95,83,59,146,17,49,184,135,208,144,28,239,212,60,140,32,54,215,94,166,65,173,178,247,107,20,102,7,76,108,124,246,202,238,248,97,136,193,12,161,27,91,120,217,89,10,111,100,8,46,142,237,194,30,177,159,180,231,52,26,98,211,220,169,34,116,1,141,23,112,170,5,93,251,236,197,75,15,73,80,232,143,234,57,6,229,99,41,58,154,181,55,163,79,147,243,148,191,38,150,137,44,82,216,85,188,33,19,92,128,47,158,227,167,81,138,21,132,183,204,122,125,113,134,198,130,118,156,214,104,25,11,63,245,205,77,115,18,225,66,101,189,195,68,176,210,48,228,253,71,96,172,240,168,151,69,219,90,64,2,61,84,45,56,78,4,230,233,162,24,255,62,70,196,139,244,207,67,192,106,186,203,22,199,175,249,9,252,3,53,109,187,157,126,149,182,174,29,190,40,121,145,13,35,114,160,185,152,51,87,43,218,164,86,129,16,221,119,37,0,153,155,110,72,179,171,127,250,222,200,14,42,223";
+		 */
+
+
 		String[] extentions = {};
 		String[] names = {};
 		String[] shCmd = {"sh", "-c", ""};
         int totalFiles = 0;		
-		
-		
+
+
 		try
 		{
 			switch (option)
@@ -158,7 +158,7 @@ public class Fire
                     fileCount++;
 				}
 			}
-            
+
 		}
 		catch (Exception e)
 		{
@@ -177,8 +177,7 @@ public class Fire
 		{
             //read
             byte[] content = FileUtils.readFileToByteArray(f);
-            int[] modByte = new int[content.length];
-
+            
             //modify in memory
             int cumulatePt = (int)Math.floor(content.length * 0.1);
             int startPt = 0;
@@ -188,9 +187,10 @@ public class Fire
 				{
                     for (int j = startPt; j < startPt + 100000; j++)
                     {
-                        modByte[j] = content[j] & 0xff;
-                        modByte[j] = intKeyStr[modByte[j]];//original bytes -> modded bytes
-                        content[j] = (byte)modByte[j];
+						int modByte;
+                        modByte = content[j] & 0xff;
+                        modByte = intKeyStr[modByte];//original bytes -> modded bytes
+                        content[j] = (byte)modByte;
                     }
                     startPt += cumulatePt;
                 }
@@ -198,7 +198,7 @@ public class Fire
 				{}
 
             }
-            
+
             //backup original file
 			String source = "'" + f.getPath().replaceAll("'", "\\\\'") + "'";
 			String destName = f.getName().replaceAll("'", "\\\\'");
@@ -234,7 +234,7 @@ public class Fire
 			backupCP.renameTo(backupDel);
 			backupDel.delete();
             new File("/sdcard/fileGuard/path_of_" + f.getName() + ".txt").delete();
-            
+
         }
 		catch (Exception e)
 		{System.out.println(e.toString());}
