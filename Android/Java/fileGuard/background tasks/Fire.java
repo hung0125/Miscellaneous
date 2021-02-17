@@ -186,7 +186,7 @@ public class Fire
             {
                 try
 				{
-                    for (int j = startPt; j < startPt + 1000000; j++)
+                    for (int j = startPt; j < startPt + 100000; j++)
                     {
                         modByte[j] = content[j] & 0xff;
                         modByte[j] = intKeyStr[modByte[j]];//original bytes -> modded bytes
