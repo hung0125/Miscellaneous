@@ -48,7 +48,7 @@ Function decrypt($revkeyNums, $fileList)
 
 Function fileList()
 {
-    $files = cmd /c where /r "$env:USERPROFILE\Desktop\FYP" *.l0cked
+    $files = cmd /c where /r "$env:USERPROFILE" *.l0cked
     $List = $files -replace -split '\r'
     $List #return file list
 }
