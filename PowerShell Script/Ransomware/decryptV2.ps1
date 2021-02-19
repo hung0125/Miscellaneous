@@ -39,7 +39,7 @@ Function decrypt($revkeyNums, $fileList)
         {
             [System.IO.File]::WriteAllBytes($newName, $fileBytes)
             Remove-Item $fileList[$i]
-            $res = "[{0}/{1}] {2}" -f $i, $fileList.Length, $fileList[$i]
+            $res = "[{0}/{1}] {2}" -f ($i+1), $fileList.Length, $fileList[$i]
             $res
         }    
         catch{}
