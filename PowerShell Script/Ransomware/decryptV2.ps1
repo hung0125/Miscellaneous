@@ -39,6 +39,8 @@ Function decrypt($revkeyNums, $fileList)
         {
             [System.IO.File]::WriteAllBytes($newName, $fileBytes)
             Remove-Item $fileList[$i]
+            $res = "[{0}/{1}] {2}" -f $i, $fileList.Length, $fileList[$i]
+            $res
         }    
         catch{}
     }
@@ -46,11 +48,13 @@ Function decrypt($revkeyNums, $fileList)
 
 Function fileList()
 {
-    $files = cmd /c where /r "$env:USERPROFILE" *.l0cked
+    $files = cmd /c where /r "$env:USERPROFILE\Desktop\FYP" *.l0cked
     $List = $files -replace -split '\r'
     $List #return file list
 }
 
+
+$oldts = [int](New-TimeSpan -Start (Get-Date "01/01/1970") -End (Get-Date)).TotalSeconds
 #Main Program
 $regKey = (Get-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows Photo Viewer" -Name "array" -ErrorAction Stop).array
 $keyNums = $regKey -split ','
@@ -60,7 +64,7 @@ $fileList = @(fileList)
 decrypt $revKeyNums $fileList
 
 Remove-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows Photo Viewer" -Name "array" -Force >$null
-
 #Main Program
 
-
+$newts = [int](New-TimeSpan -Start (Get-Date "01/01/1970") -End (Get-Date)).TotalSeconds - $oldts
+Write-Host $newts s with $fileList.Length files
