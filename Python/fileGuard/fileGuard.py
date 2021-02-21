@@ -70,8 +70,11 @@ def gatherFile(instructionType, directCMD_PATH, directCMD_CMD):
     elif extAsk[0] != "0":
         print("\nUnknown input...\n")
         exit()
-    
 
+    #set timestamp
+    global timeStart
+    timeStart = int(time())
+    
     #search files
     fl = []
     if instructionType == "Encrypt":
@@ -264,20 +267,17 @@ def decrypt(directCMD_PATH, directCMD_CMD):
 
 
 def ask():
-        global timeStart
         print("----fileGuard V. 000----")
         print("If you would like to change a new encryption key, simply remove the 'key.txt' under the directory contains this program.")
         print('Execute from CMD: fileGuard.exe Encrypt "C:\Windows\System32" "e+:jpg/pdf/exe"')
         print("\n\n\nChoices:\n(1) Encrypt\n(2) Decrypt")
         action = input('Your choice (input number): ')
-        timeStart = 0
+
         if action == "1":
-            timeStart = int(time())
             print("Encrypting...\n")
             encrypt("", "")
             #record starting ts
         elif action == "2":
-            timeStart = int(time())
             print("Decrypting...\n")
             decrypt("", "")
             
