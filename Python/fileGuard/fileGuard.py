@@ -270,12 +270,14 @@ def ask():
         print('Execute from CMD: fileGuard.exe Encrypt "C:\Windows\System32" "e+:jpg/pdf/exe"')
         print("\n\n\nChoices:\n(1) Encrypt\n(2) Decrypt")
         action = input('Your choice (input number): ')
-        timeStart = int(time())
+        timeStart = 0
         if action == "1":
+            timeStart = int(time())
             print("Encrypting...\n")
             encrypt("", "")
             #record starting ts
         elif action == "2":
+            timeStart = int(time())
             print("Decrypting...\n")
             decrypt("", "")
             
