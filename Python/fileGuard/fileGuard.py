@@ -53,8 +53,8 @@ def gatherFile(instructionType, directCMD_PATH, directCMD_CMD):
     else:
         curDir = input("Directory path?: ")
 
-    if curDir == "%userprofile%":
-        curDir = expanduser("~")
+    if "%userprofile%" in curDir.lower():
+        curDir = curDir.replace("%userprofile%", expanduser("~")).replace("%USERPROFILE%", expanduser("~")).replace("/", "\\")
     
     for i in range(5):
         print(selectOptions[i])
