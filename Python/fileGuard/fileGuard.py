@@ -179,7 +179,7 @@ def encrypt(directCMD_PATH, directCMD_CMD):
         try:
             
             readb = list(open(fl[i], "rb").read())
-            print(f"[{i+1}/{len(fl)}] Protecting: {fl[i]}\n")
+            print(f"[{i+1}/{len(fl)}] Protecting: {fl[i]}")
             
             startpt = 0
             
@@ -193,18 +193,17 @@ def encrypt(directCMD_PATH, directCMD_CMD):
             readb = bytes(readb)
 
             try:
-                move(fl[i], "Backup_" + basename(fl[i]))
-                open(f"origpath_{basename(fl[i])}.txt", "w").write(fl[i])
+                os.rename(fl[i], fl[i] + ".BackupByfGuard")
             except:
                 print(f"Failed to make backup (probably encoding error): {fl[i]}")
             #write bytes to file
-            open(fl[i], "wb").write(readb)
-            os.rename(fl[i], fl[i] + ".+enc")
+            open(fl[i] + ".+enc", "wb").write(readb)
+            
             try:
                 #clean backup
-                os.rename("Backup_" + basename(fl[i]), "DeleteMe_" + basename(fl[i]))
-                os.remove( "DeleteMe_" + basename(fl[i]))
-                os.remove(f"origpath_{basename(fl[i])}.txt")
+                os.rename(fl[i] + ".BackupByfGuard", fl[i] + ".DeleteMeByfGuard")
+                print(f"Cleaning {fl[i]}.DeleteMeByfGuard")
+                os.remove(fl[i] + ".DeleteMeByfGuard")
             except:
                 print(f"Failed to clean backup: {fl[i]}")
             
@@ -213,9 +212,9 @@ def encrypt(directCMD_PATH, directCMD_CMD):
             #clean garbage
             try:
                 #clean backup
-                os.rename("Backup_" + basename(fl[i]), "DeleteMe_" + basename(fl[i]))
-                os.remove( "DeleteMe_" + basename(fl[i]))
-                os.remove(f"origpath_{basename(fl[i])}.txt")
+                os.rename(fl[i] + ".BackupByfGuard", fl[i] + ".DeleteMeByfGuard")
+                print(f"Cleaning {fl[i]}.DeleteMeByfGuard")
+                os.remove(fl[i] + ".DeleteMeByfGuard")
             except:
                 print(f"Failed to clean backup: {fl[i]}")
             
@@ -231,7 +230,7 @@ def decrypt(directCMD_PATH, directCMD_CMD):
         try:
             readb = list(open(fl[i], "rb").read())
             
-            print(f"[{i+1}/{len(fl)}] Unprotecting: " + fl[i] + "\n")
+            print(f"[{i+1}/{len(fl)}] Unprotecting: " + fl[i])
             
             startpt = 0
 
@@ -245,27 +244,25 @@ def decrypt(directCMD_PATH, directCMD_CMD):
             readb = bytes(readb)
             
             try:
-                move(fl[i], "Backup_" + basename(fl[i]))
-                open(f"origpath_{basename(fl[i])}.txt", "w").write(fl[i])
+                os.rename(fl[i], fl[i] + ".BackupByfGuard")
             except:
                 print(f"Failed to make backup (probably encoding error): {fl[i]}")
             
-            open(fl[i], "wb").write(readb)
-            os.rename(fl[i],fl[i][0:len(fl[i])-5])
+            open(fl[i][0:len(fl[i])-5], "wb").write(readb)
 
             try:
-                os.rename("Backup_" + basename(fl[i]), "DeleteMe_" + basename(fl[i]))
-                os.remove("DeleteMe_" + basename(fl[i]))
-                os.remove(f"origpath_{basename(fl[i])}.txt")
+                os.rename(fl[i] + ".BackupByfGuard", fl[i] + ".DeleteMeByfGuard")
+                print(f"Cleaning {fl[i]}.DeleteMeByfGuard")
+                os.remove(fl[i] + ".DeleteMeByfGuard")
             except:
                 print(f"Failed to clean backup: {fl[i]}")
         except Exception as e:
             print(f"[{i+1}/{len(fl)}] {e}")
             #clean garbage
             try:
-                os.rename("Backup_" + basename(fl[i]), "DeleteMe_" + basename(fl[i]))
-                os.remove("DeleteMe_" + basename(fl[i]))
-                os.remove(f"origpath_{basename(fl[i])}.txt")
+                os.rename(fl[i] + ".BackupByfGuard", fl[i] + ".DeleteMeByfGuard")
+                print(f"Cleaning {fl[i]}.DeleteMeByfGuard")
+                os.remove(fl[i] + ".DeleteMeByfGuard")
             except:
                 print(f"Failed to clean backup: {fl[i]}")
 
