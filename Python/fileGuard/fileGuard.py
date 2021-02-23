@@ -1,9 +1,10 @@
 import os
+import subprocess
 from random import shuffle
 from shutil import move
 from sys import exit, argv
 from math import floor
-from os.path import basename, join
+from os.path import basename, join, expanduser
 from time import time
 
 timeStart = 0
@@ -52,6 +53,9 @@ def gatherFile(instructionType, directCMD_PATH, directCMD_CMD):
     else:
         curDir = input("Directory path?: ")
 
+    if curDir == "%userprofile%":
+        curDir = expanduser("~")
+    
     for i in range(5):
         print(selectOptions[i])
     
