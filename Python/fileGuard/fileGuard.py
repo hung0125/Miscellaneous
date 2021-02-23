@@ -266,12 +266,57 @@ def decrypt(directCMD_PATH, directCMD_CMD):
             except:
                 print(f"Failed to clean backup: {fl[i]}")
 
+def checkBackup():
+    backupDir = input("\n\nDirectory to search (Blank = User folder): ")
+    if backupDir == "":
+        backupDir = "%userprofile%"
+        
+    if "%userprofile%" in backupDir.lower():
+        backupDir = backupDir.replace("%userprofile%", expanduser("~")).replace("%USERPROFILE%", expanduser("~")).replace("/", "\\")
+    i = 1
+    empty = True
+    for path, subdirs, files in os.walk(backupDir):
+        for name in files:
+            if name.endswith(".BackupByfGuard"):
+                empty = False
+                print(f"[{i}] {join(path, name)}")
+                
+    if empty:
+        print("Nothing to show...")
 
+    print("Finished...\n")
+    ask()
+
+def delGarbage():
+    garbageDir = input("\n\nDirectory to search (Blank = User folder): ")
+
+    if garbageDir == "":
+        garbageDir = "%userprofile%"
+
+    if "%userprofile%" in garbageDir.lower():
+        garbageDir = garbageDir.replace("%userprofile%", expanduser("~")).replace("%USERPROFILE%", expanduser("~")).replace("/", "\\")
+    i = 1
+    empty = True
+    for path, subdirs, files in os.walk(garbageDir):
+        for name in files:
+            if name.endswith(".DeleteMeByfGuard"):
+                try:
+                    empty = False
+                    os.remove(join(path, name))
+                    print(f"[{i}] Cleaned: {join(path, name)}")
+                except:
+                    print(f"Failed to clean: {join(path, name)}")
+    if empty:
+        print("Nothing to clean...")
+        
+    print("Finished...\n")
+    ask()
+    
 def ask():
         print("----fileGuard V. 000----")
         print("If you would like to change a new encryption key, simply remove the 'key.txt' under the directory contains this program.")
         print('Execute from CMD: fileGuard.exe Encrypt "C:\Windows\System32" "e+:jpg/pdf/exe"')
-        print("\n\n\nChoices:\n(1) Encrypt\n(2) Decrypt")
+        print("\n\n\nChoices:\n(1) Encrypt\n(2) Decrypt\n(3) Check backup files created from interruption\n(4) Delete garbage created from interruption")
         action = input('Your choice (input number): ')
 
         if action == "1":
@@ -281,10 +326,14 @@ def ask():
         elif action == "2":
             print("Decrypting...\n")
             decrypt("", "")
-            
+        elif action == "3":
+            checkBackup()
+        elif action == "4":
+            delGarbage()
         else:
             print("Unknown choice")
             ask()
+            
             
 #command example:python fileGuard.py Encrypt "C:\Windows\System32" "e+:jpg/pdf/exe"
 if len(argv) == 4:
