@@ -8,6 +8,7 @@ from os.path import basename, join, expanduser, exists
 from time import time
 
 timeStart = 0
+fileSize = 0
 
 def genKey():
     keyVals = []
@@ -19,16 +20,16 @@ def genKey():
         keyStr += str(keyVals[i])
         if i < 255:
             keyStr += ","
-    open("key.txt", "w").write(keyStr)
+    open("fGuardkey.txt", "w").write(keyStr)
 
 keyStr = ""
 
 try:
-    keyStr = open("key.txt", "r").read().split(",")
+    keyStr = open("fGuardkey.txt", "r").read().split(",")
 except:
-    print("[info] Key doesn't exist. generated a new key (key.txt).")
+    print("[info] Key doesn't exist. generated a new key (fGuardkey.txt).")
     genKey()
-    keyStr = open("key.txt", "r").read().split(",")
+    keyStr = open("fGuardkey.txt", "r").read().split(",")
 
 key = []
 revKey = [0] * 256
@@ -168,6 +169,7 @@ def gatherFile(instructionType, directCMD_PATH, directCMD_CMD):
     return fl
 
 def encrypt(directCMD_PATH, directCMD_CMD):
+    global fileSize
     fl = []
     if directCMD_CMD != "" and directCMD_PATH != "":
         fl = gatherFile("Encrypt", directCMD_PATH, directCMD_CMD)
@@ -176,8 +178,11 @@ def encrypt(directCMD_PATH, directCMD_CMD):
     
     #encryption   
     for i in range(len(fl)):
+        if fl[i].endswith("fGuardkey.txt") or fl[i].endswith("fileGuard.py"):
+            print(f"[{i+1}/{len(fl)}] Bypassed some file you don't want to encrypt...")
+            continue
+        
         try:
-            
             readb = list(open(fl[i], "rb").read())
             print(f"[{i+1}/{len(fl)}] Protecting: {fl[i]}")
             
@@ -194,6 +199,9 @@ def encrypt(directCMD_PATH, directCMD_CMD):
 
             #write bytes to file
             open(fl[i] + ".+enc", "wb").write(readb)
+            
+            #record size
+            fileSize += len(readb)/1024/1024
             
             try:
                 #clean backup
@@ -214,6 +222,7 @@ def encrypt(directCMD_PATH, directCMD_CMD):
                 print(f"Failed to clean backup: {fl[i]}")
             
 def decrypt(directCMD_PATH, directCMD_CMD):
+    global fileSize
     fl = []
     if directCMD_CMD != "" and directCMD_PATH != "":
         fl = gatherFile("Decrypt", directCMD_PATH ,directCMD_CMD)
@@ -221,7 +230,7 @@ def decrypt(directCMD_PATH, directCMD_CMD):
         fl = gatherFile("Decrypt", "", "")
     
     #decryption
-    for i in range(len(fl)):
+    for i in range(len(fl)):        
         try:
             readb = list(open(fl[i], "rb").read())
             
@@ -239,6 +248,8 @@ def decrypt(directCMD_PATH, directCMD_CMD):
             readb = bytes(readb)
             
             open(fl[i][0:len(fl[i])-5], "wb").write(readb)
+
+            fileSize += len(readb)/1024/1024
 
             try:
                 os.rename(fl[i], fl[i] + ".DeleteMeByfGuard")
@@ -270,7 +281,7 @@ def checkBackup():
                 curPath = join(path, name)
                 if(exists(curPath[0:len(curPath)-5])):
                     empty = False
-                    print(f"[{i}] {curPath[0:len(curPath)-5]}")
+                    print(f"[{i}] {curPath[0:len(curPath)-5]} <==> {name}")
                 
     if empty:
         print("Nothing to show...")
@@ -305,7 +316,7 @@ def delGarbage():
     
 def ask():
         print("----fileGuard V. 000----")
-        print("If you would like to change a new encryption key, simply remove the 'key.txt' under the directory contains this program.")
+        print("If you would like to change a new encryption key, simply remove the 'fGuardkey.txt' under the directory contains this program.")
         print('Execute from CMD: fileGuard.exe Encrypt "C:\Windows\System32" "e+:jpg/pdf/exe"')
         print("\n\n\nChoices:\n(1) Encrypt\n(2) Decrypt\n(3) Check backup files created from interruption\n(4) Delete garbage created from interruption")
         action = input('Your choice (input number): ')
@@ -340,4 +351,4 @@ else:
     ask()
 
 timeUsed = int(time()) - timeStart
-ended = input(f"Finished. Used {timeUsed} seconds. \nPress enter to exit...")
+ended = input(f"Finished modifying {round(fileSize, 3)}MB of data using {timeUsed} seconds. \nPress enter to exit...")
