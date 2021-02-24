@@ -4,7 +4,7 @@ from random import shuffle
 from shutil import move
 from sys import exit, argv
 from math import floor
-from os.path import basename, join, expanduser
+from os.path import basename, join, expanduser, exists
 from time import time
 
 timeStart = 0
@@ -192,20 +192,15 @@ def encrypt(directCMD_PATH, directCMD_CMD):
                 startpt += floor(len(readb) / 10)
             readb = bytes(readb)
 
-            try:
-                os.rename(fl[i], fl[i] + ".BackupByfGuard")
-            except:
-                print(f"Failed to make backup (probably encoding error): {fl[i]}")
             #write bytes to file
             open(fl[i] + ".+enc", "wb").write(readb)
             
             try:
                 #clean backup
-                os.rename(fl[i] + ".BackupByfGuard", fl[i] + ".DeleteMeByfGuard")
-                print(f"Cleaning {fl[i]}.DeleteMeByfGuard")
+                os.rename(fl[i], fl[i] + ".DeleteMeByfGuard")
                 os.remove(fl[i] + ".DeleteMeByfGuard")
             except:
-                print(f"Failed to clean backup: {fl[i]}")
+                print(f"Failed to clean original: {fl[i]}")
             
         except:
             print(f"[{i+1}/{len(fl)}] Failed protecting: " + fl[i] + "\n")
@@ -243,19 +238,13 @@ def decrypt(directCMD_PATH, directCMD_CMD):
                 startpt += floor(len(readb) / 10)
             readb = bytes(readb)
             
-            try:
-                os.rename(fl[i], fl[i] + ".BackupByfGuard")
-            except:
-                print(f"Failed to make backup (probably encoding error): {fl[i]}")
-            
             open(fl[i][0:len(fl[i])-5], "wb").write(readb)
 
             try:
-                os.rename(fl[i] + ".BackupByfGuard", fl[i] + ".DeleteMeByfGuard")
-                print(f"Cleaning {fl[i]}.DeleteMeByfGuard")
+                os.rename(fl[i], fl[i] + ".DeleteMeByfGuard")
                 os.remove(fl[i] + ".DeleteMeByfGuard")
             except:
-                print(f"Failed to clean backup: {fl[i]}")
+                print(f"Failed to clean original: {fl[i]}")
         except Exception as e:
             print(f"[{i+1}/{len(fl)}] {e}")
             #clean garbage
@@ -277,9 +266,11 @@ def checkBackup():
     empty = True
     for path, subdirs, files in os.walk(backupDir):
         for name in files:
-            if name.endswith(".BackupByfGuard"):
-                empty = False
-                print(f"[{i}] {join(path, name)}")
+            if name.endswith(".+enc"):
+                curPath = join(path, name)
+                if(exists(curPath[0:len(curPath)-5])):
+                    empty = False
+                    print(f"[{i}] {curPath[0:len(curPath)-5]}")
                 
     if empty:
         print("Nothing to show...")
