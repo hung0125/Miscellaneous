@@ -178,7 +178,7 @@ def encrypt(directCMD_PATH, directCMD_CMD):
     
     #encryption   
     for i in range(len(fl)):
-        if fl[i].endswith("fGuardkey.txt") or fl[i].endswith("fileGuard.py"):
+        if "fGuardkey.txt" in fl[i] or "fileGuard" in fl[i]:
             print(f"[{i+1}/{len(fl)}] Bypassed some file you may don't want to encrypt...")
             continue
         
