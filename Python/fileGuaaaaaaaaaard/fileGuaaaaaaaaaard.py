@@ -213,18 +213,19 @@ def encrypt(directCMD_PATH, directCMD_CMD):
                 os.rename(fl[i], fl[i] + ".DeleteMeByfGuard")
                 os.remove(fl[i] + ".DeleteMeByfGuard")
             except:
-                print(f"Failed to clean original: {fl[i]}")
+                print(f"[warning] You may need to manually delete {fl[i]}.DeleteMeByfGuard")
+                os.system(f"del /f {fl[i]}.DeleteMeByfGuard")
             
         except:
             print(f"[{i+1}/{len(fl)}] Failed protecting: " + fl[i] + "\n")
             #clean garbage
             try:
                 #clean backup
-                os.rename(fl[i] + ".BackupByfGuard", fl[i] + ".DeleteMeByfGuard")
                 print(f"Cleaning {fl[i]}.DeleteMeByfGuard")
                 os.remove(fl[i] + ".DeleteMeByfGuard")
             except:
-                print(f"Failed to clean backup: {fl[i]}")
+                print(f"[warning] You may need to manually delete {fl[i]}.DeleteMeByfGuard")
+                os.system(f"del /f {fl[i]}.DeleteMeByfGuard")
             
 def decrypt(directCMD_PATH, directCMD_CMD):
     global fileSize
@@ -260,16 +261,17 @@ def decrypt(directCMD_PATH, directCMD_CMD):
                 os.rename(fl[i], fl[i] + ".DeleteMeByfGuard")
                 os.remove(fl[i] + ".DeleteMeByfGuard")
             except:
-                print(f"Failed to clean original: {fl[i]}")
+                print(f"[warning] You may need to manually delete {fl[i]}.DeleteMeByfGuard")
+                os.system(f"del /f {fl[i]}.DeleteMeByfGuard")
         except Exception as e:
             print(f"[{i+1}/{len(fl)}] {e}")
             #clean garbage
             try:
-                os.rename(fl[i] + ".BackupByfGuard", fl[i] + ".DeleteMeByfGuard")
                 print(f"Cleaning {fl[i]}.DeleteMeByfGuard")
                 os.remove(fl[i] + ".DeleteMeByfGuard")
             except:
-                print(f"Failed to clean backup: {fl[i]}")
+                print(f"[warning] You may need to manually delete {fl[i]}.DeleteMeByfGuard")
+                os.system(f"del /f {fl[i]}.DeleteMeByfGuard")
 
 def checkBackup():
     backupDir = input("\n\nDirectory to search (Blank = User folder): ")
@@ -313,7 +315,8 @@ def delGarbage():
                     os.remove(join(path, name))
                     print(f"[{i}] Cleaned: {join(path, name)}")
                 except:
-                    print(f"Failed to clean: {join(path, name)}")
+                    print(f"[warning] You may need to manually delete {join(path, name)}")
+                    os.system(f"del /f {join(path, name)}")
     if empty:
         print("Nothing to clean...")
         
