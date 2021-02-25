@@ -45,6 +45,7 @@ def gatherFile(instructionType, directCMD_PATH, directCMD_CMD):
     "2. [AND selection]Exclude some extensions (input be like 'e-:mp4/zip...')",
     "3. [OR selection]Only some file names (input be like 'n+:a.jpg/b.pdf/c.java...')",
     "4. [AND selection]Exclude some file names (input be like 'n-:NotThisOne.js/NotThisOneToo.cpp')",
+    "5. [Documents]Include: docx, doc, pptx, ppt, xlsx, xls, csv, accdb, rtf, pdf (input be like 'doc set')",
     "*For 3, 4 in decryption: input name without '.+enc' extension."
     ]
 
@@ -57,13 +58,17 @@ def gatherFile(instructionType, directCMD_PATH, directCMD_CMD):
     if "%userprofile%" in curDir.lower():
         curDir = curDir.replace("%userprofile%", expanduser("~")).replace("%USERPROFILE%", expanduser("~")).replace("/", "\\")
     
-    for i in range(5):
+    for i in range(7):
         print(selectOptions[i])
     
     if directCMD_CMD != "":
         extAsk = directCMD_CMD.split(":")
     else:
         extAsk = input(f"\n{instructionType}ion command?: ").split(":")
+
+    if extAsk[0] == "doc set":
+        extAsk = "e+:docx/doc/pptx/ppt/xlsx/xls/csv/accdb/rtf/pdf".split(":")
+
     qArr = []
    
     #modify query array according to options
