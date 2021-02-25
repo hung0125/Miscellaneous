@@ -287,6 +287,7 @@ def checkBackup():
                 if(exists(curPath[0:len(curPath)-5])):
                     empty = False
                     print(f"[{i}] {curPath[0:len(curPath)-5]} <==> {name}")
+                    i += 1
                 
     if empty:
         print("Nothing to show...")
