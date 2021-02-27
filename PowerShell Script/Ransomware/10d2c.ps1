@@ -1,3 +1,7 @@
-function encrypt():
+function encrypt()
+{
 
-$getUUID = (Get-WmiObject -Class Win32_ComputerSystemProduct).UUID
+}
+
+$getUUID = (Get-WmiObject -Class Win32_ComputerSystemProduct).UUID;
+$UUID = $getUUID.split("-")[4];
