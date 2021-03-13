@@ -113,7 +113,7 @@
                 }
                 lower += credit*1;
             }
-            CGPA = Math.round((upper/lower + 0.005) * 100) / 100;
+            CGPA = Math.min(Math.round((upper/lower + 0.005) * 100) / 100, 4);
             document.getElementById("res").innerHTML = CGPA;
             resultAlert = 'Number of courses: {course}\nFormula: {upper} (Sum of credits * GPA from grade)/{lower} (Sum of credits) = {CGPA}';
             alert(resultAlert.replace('{course}',resultList.length).replace('{upper}', upper).replace('{lower}', lower).replace('{CGPA}', CGPA));
