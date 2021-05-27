@@ -14,7 +14,7 @@ while True:
     for i in range(howLong):
         randStr += chr(choice(strElement))
     
-    #Or replace Google with Bing, DuckDuckGo etc.
+    #Or replace Google with Bing, DuckDuckGo, etc.
     open("Google.html", 'wb').write(rq.get(f"https://www.google.com/search?q={randStr}").content)
     count += 1
     print(f"#{count}: I searched:\n {randStr}\n\n_____________________")
