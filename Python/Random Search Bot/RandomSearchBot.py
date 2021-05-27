@@ -1,4 +1,4 @@
-#Most useless Python script in the World
+#The most useless Python script in the World
 import requests as rq
 from random import randrange as rr
 from random import choice
