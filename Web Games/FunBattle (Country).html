@@ -1,0 +1,188 @@
+<html>
+    <style>
+        h1
+        {
+            text-align: center;
+        }
+        #inp
+        {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+        input
+        {
+            width: 40%;
+        }
+        button
+        {
+            width: 15%;
+        }
+        #charStat
+        {
+            margin: auto;
+            width: 50%;
+            border: 3px solid rebeccapurple;
+            padding: 10px;
+            height: 50px;
+        }
+        #HPA, #HPB
+        {
+            width: 40%;
+            height: 100%;
+        }
+        #HPA
+        {
+            float: left;
+        }
+        #HPB
+        {
+            float: right;
+        }
+        #main
+        {
+            margin: auto;
+            width: 50%;
+            border: 3px solid red;
+            padding: 10px;
+        }
+
+    </style>
+    <body>
+        <h1>FunBattle! (Country Edition)</h1>
+        <div id="inp">
+            <input id="charA" placeholder="Name of country A"/>
+            <input id="charB" placeholder="Name of country B"/>
+            <button id="Fight" onclick="fight()">Battle</button>
+            <br><br>
+            <input id="dmgFrom" placeholder="Default (from): 0"/> -
+            <input id="dmgTo" placeholder="Default (to): 100000"/>
+            <button id="setRange" onclick="setRange()">Set Population Loss Range</button>
+        </div>
+        <div id="charStat">
+            <div id="HPA"><b style="color: green;">??</b>'s population:1000000</div>
+            ||
+            <div id="HPB"><b style="color: purple;">??</b>'s population:1000000</h5></div>
+        </div>
+        <div id="main"></div>
+    </body>
+    <script>
+        //For detailed comments, please refer to Biological editions.
+        //Define list of attack descriptions
+        attackDescriptions = [
+            "{atk} launched a nuke attack on {rec}. {rec} lost {DMG} population.<br>",
+            "{atk} launched several missiles to {rec}. {rec} lost {DMG} population.<br>",
+            "{atk} sent navy to {rec}. {rec} lost {DMG} population.<br>",
+            "{atk} sent army to {rec}. {rec} lost {DMG} population.<br>",
+            "{atk} sent air force to {rec}. {rec} lost {DMG} population.<br>",
+            "{atk} murdered the citizens from {rec} living in {atk}. {rec} lost {DMG} population.<br>"
+        ];
+        //Define HP
+        hpA = 1000000;  
+        hpB = 1000000;
+
+        //Define damage range
+        dmgFrom = 0;
+        dmgTo = 100000;
+
+        //Set damage range from user input
+        function setRange()
+        {
+            dmgFrom = document.getElementById("dmgFrom").value*1;
+            dmgTo = document.getElementById("dmgTo").value*1;
+
+            alert(`Current population loss range: ${dmgFrom} - ${dmgTo}`);
+        }
+
+        //Fight launches from button click
+        function fight()
+        {
+            
+            charA = document.getElementById("charA").value;
+            charB = document.getElementById("charB").value;
+            
+            if(charA == '' || charB == '')
+            {
+                document.getElementById("main").innerText = "one or both characters have no name, fight could not be started.\n";
+            }else
+            {
+                //Disable buttons
+                document.getElementById("Fight").disabled = true;
+                document.getElementById("setRange").disabled = true;
+
+                //Display who has joined the fight
+                document.getElementById("main").innerHTML = `<b style="color: green;">${charA}</b> has joined the fight.<br><b style="color: purple;">${charB}</b> has joined the fight.<br>`;
+                
+                //Display initial statistics for each characters
+                document.getElementById("HPA").innerHTML = `<b style="color: green;">${charA}</b>'s population: 1000000`;
+                document.getElementById("HPB").innerHTML = `<b style="color: purple;">${charB}</b>'s population: 1000000`;
+                
+                //Initialize statistics for each characters
+                hpA = 1000000;
+                hpB = 1000000;
+                
+                //Fight every 2 seconds
+                doMain = setInterval(action, 2000);
+
+            }
+        }
+
+        //Main fight
+        function action()
+        {
+            if(hpA > 0 && hpB > 0)
+            {
+                updateHP();
+            }else
+            {
+                if(hpA <= 0)
+                    document.getElementById("main").innerHTML += `The battle is over. <b style="color: purple;">${charB}</b> defeated <b style="color: green;">${charA}</b>!`;
+                else
+                    document.getElementById("main").innerHTML += `The battle is over. <b style="color: green;">${charA}</b> defeated <b style="color: purple;">${charB}</b>!`;
+
+                    document.getElementById("Fight").disabled = false;
+                document.getElementById("setRange").disabled = false;
+                
+                clearInterval(doMain);
+            }
+        }
+
+        //Update HP for each character
+        function updateHP()
+        {
+            damage = Math.floor(Math.random() * (dmgTo + 1 - dmgFrom) + dmgFrom);
+            attackRole = Math.floor(Math.random() * 2);
+
+            if(attackRole == 0)
+            {
+                //attacker = charA;
+                //receiver = charB;
+                damage = Math.min(damage, hpB);
+                document.getElementById("main").innerHTML += attackDescriptions[Math.floor(Math.random() * attackDescriptions.length)]
+                    .replaceAll("{atk}",`<b style='color: green;'>${charA}</b>`)
+                    .replaceAll("{rec}", `<b style='color: purple;'>${charB}</b>`)
+                    .replace("{DMG}", `<b style='color: red;'>${damage}</b>`);
+                hpB -= damage;
+                document.getElementById("HPB").innerHTML = `<b style="color: purple;">${charB}</b>'s population: <nobr style="color:red">${hpB}</nobr>`;
+                setTimeout(function(){
+                    document.getElementById("HPB").innerHTML = `<b style="color: purple;">${charB}</b>'s population: ${hpB}`;
+                }, 500);
+            }
+            else
+            {
+                //attacker = charB;
+                //receiver = charA;
+                damage = Math.min(damage, hpA);
+                document.getElementById("main").innerHTML += attackDescriptions[Math.floor(Math.random() * attackDescriptions.length)]
+                    .replaceAll("{atk}",`<b style='color: purple;'>${charB}</b>`)
+                    .replaceAll("{rec}", `<b style='color: green;'>${charA}</b>`)
+                    .replace("{DMG}", `<b style='color: red;'>${damage}</b>`);
+                hpA -= damage;
+                document.getElementById("HPA").innerHTML = `<b style="color: green;">${charA}</b>'s population: <nobr style="color:red">${hpA}</nobr>`;
+                setTimeout(function(){
+                    document.getElementById("HPA").innerHTML = `<b style="color: green;">${charA}</b>'s population: ${hpA}`;
+                }, 500);
+            }
+        }
+    </script>
+</html>
