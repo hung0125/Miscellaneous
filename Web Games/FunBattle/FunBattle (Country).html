@@ -45,6 +45,9 @@
             width: 50%;
             border: 3px solid red;
             padding: 10px;
+            height: 20%;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
     </style>
@@ -65,6 +68,7 @@
             <div id="HPB"><b style="color: purple;">??</b>'s population:1000000</h5></div>
         </div>
         <div id="main"></div>
+
     </body>
     <script>
         //For detailed comments, please refer to Biological editions.
@@ -145,6 +149,9 @@
                 
                 clearInterval(doMain);
             }
+
+            scrollMain = document.getElementById("main");
+            scrollMain.scrollTop = scrollMain.scrollHeight;
         }
 
         //Update HP for each character
