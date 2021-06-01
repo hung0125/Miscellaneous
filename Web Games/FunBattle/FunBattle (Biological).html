@@ -45,6 +45,9 @@
             width: 50%;
             border: 3px solid red;
             padding: 10px;
+            height: 20%;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
     </style>
@@ -148,6 +151,9 @@
                 document.getElementById("setRange").disabled = false;
                 clearInterval(doMain);
             }
+            
+            scrollMain = document.getElementById("main");
+            scrollMain.scrollTop = scrollMain.scrollHeight;
         }
 
         //Update HP for each character
