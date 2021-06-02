@@ -112,8 +112,8 @@
             }
             CGPA = Math.min(Math.round((upper/lower + 0.005) * 100) / 100, 4);
             document.getElementById("res").innerHTML = CGPA;
-            resultAlert = 'Number of courses: {course}\nFormula: {upper} (Sum of credits * GPA from grade)/{lower} (Sum of credits) = {CGPA}';
-            alert(resultAlert.replace('{course}',resultList.length).replace('{upper}', upper).replace('{lower}', lower).replace('{CGPA}', CGPA));
+            resultAlert = `Number of courses: ${resultList.length}\nFormula: ${upper} (Sum of credits * GPA from grade)/${lower} (Sum of credits) = ${CGPA}`;
+            alert(resultAlert);
         }
         document.getElementById("input").value = "10 A-\n20 A-\n15 A\n30 B\n30 C\n40 D\n50 F";
         alert("Wel9come and here's my contact: hungyh0125@gmail.com");
